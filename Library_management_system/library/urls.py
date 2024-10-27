@@ -13,5 +13,5 @@ urlpatterns = [
     path('borrowed/<int:pk>/return/', views.return_book, name='return_book'),
     path('profile/', views.profile, name='profile'),
     path('profile/<str:username>/', views.profile_detail, name='profile_detail'),
-    path('logout/', LogoutView.as_view(), name='logout'),
+     path('accounts/logout/', LogoutView.as_view(), name='logout'),
 ]
