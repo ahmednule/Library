@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ book.title }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2>{{ book.title }}</h2>
+    </div>
+    <div class="card-body">
+        <h5 class="card-subtitle mb-3 text-muted">By {{ book.author }}</h5>
+        <p class="card-text">
+            <strong>ISBN:</strong> {{ book.isbn }}<br>
+            <strong>Publication Date:</strong> {{ book.publication_date }}<br>
+            <strong>Available Copies:</strong> {{ book.available_copies }}
+        </p>
+
+        {% if book.available_copies > 0 and not borrowed %}
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Borrow Book</button>
+        </form>
+        {% elif borrowed %}
+        <div class="alert alert-info">
+            You have already borrowed this book.
+        </div>
+        {% else %}
+        <div class="alert alert-warning">
+            No copies available for borrowing.
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
