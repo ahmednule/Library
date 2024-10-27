@@ -6,20 +6,28 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login
 from .models import Book, BorrowedBook,Profile
 from .forms import BookForm, BorrowBookForm, CustomUserCreationForm,UserUpdateForm,ProfileUpdateForm
+from django.db import IntegrityError
 
 def signup(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user)
-            messages.success(request, 'Account created successfully!')
-            return redirect('book_list')
+            try:
+                user = form.save()
+                login(request, user)
+                messages.success(request, 'Account created successfully!')
+                return redirect('book_list') 
+            except IntegrityError as e:
+                if 'UNIQUE constraint failed: auth_user.username' in str(e):
+                    form.add_error('username', 'This username is already taken. Please choose another.')
+                else:
+                    messages.error(request, 'An unexpected error occurred. Please try again.')
     else:
         form = CustomUserCreationForm()
+    
     return render(request, 'registration/signup.html', {'form': form})
 
-@login_required
+
 def book_list(request):
     books = Book.objects.all()
     return render(request, 'library/book_list.html', {'books': books})
