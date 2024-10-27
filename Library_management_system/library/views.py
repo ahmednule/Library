@@ -16,7 +16,7 @@ def signup(request):
                 user = form.save()
                 login(request, user)
                 messages.success(request, 'Account created successfully!')
-                return redirect('book_list') 
+                return redirect('login') 
             except IntegrityError as e:
                 if 'UNIQUE constraint failed: auth_user.username' in str(e):
                     form.add_error('username', 'This username is already taken. Please choose another.')

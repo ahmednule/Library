@@ -3,12 +3,17 @@
 {% block title %}Books{% endblock %}
 
 {% block content %}
-<h1 class="mb-4">Available Books</h1>
+<h1 class="mb-4 text-center">Available Books</h1>
 
 <div class="row row-cols-1 row-cols-md-3 g-4">
     {% for book in books %}
     <div class="col">
-        <div class="card h-100">
+        <div class="card h-100 shadow-sm">
+            {% if book.image %}
+            <img src="{{ book.image.url }}" class="card-img-top img-fluid" alt="{{ book.title }}" style="max-height: 300px; object-fit: cover;">
+            {% else %}
+            <img src="{% static 'images/default-book.jpg' %}" class="card-img-top img-fluid" alt="Default Book" style="max-height: 300px; object-fit: cover;">
+            {% endif %}
             <div class="card-body">
                 <h5 class="card-title">{{ book.title }}</h5>
                 <h6 class="card-subtitle mb-2 text-muted">{{ book.author }}</h6>
