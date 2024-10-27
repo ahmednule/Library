@@ -2,9 +2,10 @@ from django.shortcuts import render
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.contrib.auth.models import User
 from django.contrib.auth import login
-from .models import Book, BorrowedBook
-from .forms import BookForm, BorrowBookForm, CustomUserCreationForm
+from .models import Book, BorrowedBook,Profile
+from .forms import BookForm, BorrowBookForm, CustomUserCreationForm,UserUpdateForm,ProfileUpdateForm
 
 def signup(request):
     if request.method == 'POST':
@@ -103,3 +104,41 @@ def return_book(request, pk):
         messages.success(request, 'Book returned successfully!')
         return redirect('borrowed_books')
     return render(request, 'library/return_book_confirm.html', {'borrowed_book': borrowed_book})
+
+@login_required
+def profile(request):
+    if request.method == 'POST':
+        user_form = UserUpdateForm(request.POST, instance=request.user)
+        profile_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
+        
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(request, 'Your profile has been updated!')
+            return redirect('profile')
+    else:
+        user_form = UserUpdateForm(instance=request.user)
+        profile_form = ProfileUpdateForm(instance=request.user.profile)
+
+    # Get borrowing history
+    borrowed_history = BorrowedBook.objects.filter(user=request.user).order_by('-borrowed_date')
+    
+    context = {
+        'user_form': user_form,
+        'profile_form': profile_form,
+        'borrowed_history': borrowed_history
+    }
+    return render(request, 'library/profile.html', context)
+
+@login_required
+def profile_detail(request, username):
+    user = get_object_or_404(User, username=username)
+    borrowed_history = BorrowedBook.objects.filter(user=user, returned=True).order_by('-borrowed_date')
+    current_borrowed = BorrowedBook.objects.filter(user=user, returned=False)
+    
+    context = {
+        'profile_user': user,
+        'borrowed_history': borrowed_history,
+        'current_borrowed': current_borrowed
+    }
+    return render(request, 'library/profile_detail.html', context)

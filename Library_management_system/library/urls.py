@@ -10,4 +10,6 @@ urlpatterns = [
     path('book/<int:pk>/delete/', views.book_delete, name='book_delete'),
     path('borrowed/', views.borrowed_books, name='borrowed_books'),
     path('borrowed/<int:pk>/return/', views.return_book, name='return_book'),
+    path('profile/', views.profile, name='profile'),
+    path('profile/<str:username>/', views.profile_detail, name='profile_detail'),
 ]
