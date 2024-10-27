@@ -26,7 +26,8 @@ SECRET_KEY = 'django-insecure-#g!-pl6_m+tuzhcpj(p=w*@t445$o*a#x))zn%n+*)ijmh6cp1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
+# CSRF_TRUSTED_ORIGINS = ['*']
 
 
 # Application definition
@@ -34,6 +35,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     "library",
     "accounts",
+    'crispy_forms',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
