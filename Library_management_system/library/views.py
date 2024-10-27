@@ -142,3 +142,6 @@ def profile_detail(request, username):
         'current_borrowed': current_borrowed
     }
     return render(request, 'library/profile_detail.html', context)
+
+def logout(request):
+    return render(request, 'registration/logout.html')

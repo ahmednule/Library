@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile - {{ user.username }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card bg-primary text-white">
+                <div class="card-body d-flex align-items-center">
+                    <div class="profile-image me-4">
+                        {% if user.profile.profile_picture %}
+                            <img src="{{ user.profile.profile_picture.url }}" 
+                                 class="rounded-circle" 
+                                 style="width: 120px; height: 120px; object-fit: cover;" 
+                                 alt="Profile Picture">
+                        {% else %}
+                            <div class="rounded-circle bg-light text-primary d-flex align-items-center justify-content-center" 
+                                 style="width: 120px; height: 120px; font-size: 48px;">
+                                {{ user.username|make_list|first|upper }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <h1>{{ user.get_full_name|default:user.username }}</h1>
+                        <p>Member since: {{ user.date_joined|date:"F j, Y" }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header">Edit Profile</div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <h5 class="text-primary mb-3">Account Information</h5>
+                        {% for field in user_form %}
+                        <div class="mb-3">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                                {% for error in field.errors %}
+                                    <div class="alert alert-danger">{{ error }}</div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                        
+                        <h5 class="text-primary mb-3">Personal Information</h5>
+                        {% for field in profile_form %}
+                        <div class="mb-3">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                                {% for error in field.errors %}
+                                    <div class="alert alert-danger">{{ error }}</div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+
+                        <button type="submit" class="btn btn-primary w-100">Update Profile</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header">Reading Statistics</div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-4">
+                            <h3>{{ borrowed_history.count }}</h3>
+                            <p>Total Books Read</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h3>{{ current_borrowed.count }}</h3>
+                            <p>Currently Reading</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">Reading History</div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Book</th>
+                                <th>Borrowed</th>
+                                <th>Due Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for borrowed in borrowed_history %}
+                            <tr>
+                                <td>{{ borrowed.book.title }}</td>
+                                <td>{{ borrowed.borrowed_date|date:"M d, Y" }}</td>
+                                <td>{{ borrowed.return_date|date:"M d, Y" }}</td>
+                                <td>
+                                    {% if borrowed.returned %}
+                                        <span class="badge bg-success">Returned</span>
+                                    {% elif borrowed.return_date < today %}
+                                        <span class="badge bg-danger">Overdue</span>
+                                    {% else %}
+                                        <span class="badge bg-warning">Borrowed</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center">No books borrowed yet.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
