@@ -26,8 +26,8 @@ SECRET_KEY = 'django-insecure-#g!-pl6_m+tuzhcpj(p=w*@t445$o*a#x))zn%n+*)ijmh6cp1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['beckam-jossy-library.onrender.com','localhost', '127.0.0.1']
-CSRF_TRUSTED_ORIGINS = ['https://beckam-jossy-library.onrender.com']
+ALLOWED_HOSTS = ['library-z10b.onrender.com','localhost', '127.0.0.1']
+CSRF_TRUSTED_ORIGINS = ['https://library-z10b.onrender.com']
 
 
 # Application definition
