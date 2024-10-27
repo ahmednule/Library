@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}My Borrowed Books{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">My Borrowed Books</h1>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for borrowed in borrowed_books %}
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">{{ borrowed.book.title }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">{{ borrowed.book.author }}</h6>
+                <p class="card-text">
+                    <strong>Borrowed Date:</strong> {{ borrowed.borrowed_date }}<br>
+                    <strong>Return Date:</strong> {{ borrowed.return_date }}
+                </p>
+                <div class="d-grid">
+                    <a href="{% url 'return_book' borrowed.pk %}" class="btn btn-primary">Return Book</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col">
+        <p>You haven't borrowed any books yet.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
